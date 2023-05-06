@@ -1,0 +1,135 @@
+{
+    "id": 262362,
+    "title": "The Sky's the Limit",
+    "slug": "ntm-first-training-pew",
+    "description": "",
+    "poster": "",
+    "thumbnail": "https://cdn-prod.xperiencify.com/users/20/trainings/54357/1610839154306.jpg",
+    "draft": false,
+    "available_status": "",
+    "raw_date_access": null,
+    "xp": 3,
+    "xxp": 0,
+    "completed_xp_status": false,
+    "completed_xxp_status": false,
+    "awaiting_status": "wait",
+    "parent_name": "pewpewpew",
+    "parent_slug": "pewpewpew",
+    "parent_id": 48953,
+    "parent_description": "<div>Description Pew!</div>",
+    "module_order": 1,
+    "order": 1,
+    "actions": [
+        {
+            "id": 82954,
+            "entity": 48954,
+            "type": "xp",
+            "is_checked_hidden": true,
+            "display_type": "SIMPLE_CHECKBOX",
+            "name": "<div>Action</div>",
+            "title": "<div>Watched Video</div>",
+            "value": 10,
+            "description": "<div>Add a short overview of the what you covered in the video; a very brief summary so that your student can double-check that they understood your main points./</div>",
+            "label": "Done It!",
+            "image": "https://cdn-dev.xperiencify.com/coreImages/3-1592391556340.jpeg",
+            "icon": null,
+            "component": null,
+            "page": null,
+            "enabled": true,
+            "add_tags": [
+                789
+            ],
+            "remove_tags": [
+                799
+            ],
+            "is_completed": false,
+            "module": 48953
+        },
+        {
+            "id": 82955,
+            "entity": 48954,
+            "type": "xp",
+            "is_checked_hidden": true,
+            "display_type": "SIMPLE_CHECKBOX",
+            "name": "<div>Action</div>",
+            "title": "<div>Watched Video</div>",
+            "value": 10,
+            "description": "<div>Add a short overview of the what you covered in the video; a very brief summary so that your student can double-check that they understood your main points./</div>",
+            "label": "Done It!",
+            "image": "https://cdn-dev.xperiencify.com/coreImages/4-1592391563788.jpeg",
+            "icon": null,
+            "component": null,
+            "page": null,
+            "enabled": true,
+            "add_tags": [
+                789
+            ],
+            "remove_tags": [
+                799
+            ],
+            "is_completed": false,
+            "module": 48953
+        },
+        {
+            "id": 82956,
+            "entity": 48954,
+            "type": "xp",
+            "is_checked_hidden": true,
+            "display_type": "SIMPLE_CHECKBOX",
+            "name": "<div>Action</div>",
+            "title": "<div>Watched Video</div>",
+            "value": 10,
+            "description": "<div>Add a short overview of the what you covered in the video; a very brief summary so that your student can double-check that they understood your main points./</div>",
+            "label": "Done It!",
+            "image": "https://cdn-dev.xperiencify.com/coreImages/6-1592391582160.jpeg",
+            "icon": null,
+            "component": null,
+            "page": null,
+            "enabled": true,
+            "add_tags": [
+                789
+            ],
+            "remove_tags": [
+                799
+            ],
+            "is_completed": false,
+            "module": 48953
+        }
+    ],
+    "next_training": {
+        "id": 48957,
+        "title": "NTM Second Course",
+        "slug": "ntm-second-course",
+        "description": "",
+        "poster": "",
+        "thumbnail": "https://cdn-dev.xperiencify.com/coreImages/13-1592391616424.jpeg",
+        "draft": false,
+        "available_status": "",
+        "raw_date_access": null,
+        "xp": 7,
+        "xxp": null,
+        "completed_xp_status": false,
+        "completed_xxp_status": false,
+        "awaiting_status": "wait",
+        "parent_name": "pewpewpew",
+        "parent_slug": "pewpewpew",
+        "parent_id": 48953,
+        "parent_description": "<div>Description Pew!</div>",
+        "module_order": 1,
+        "order": 2
+    },
+    "notes": "<div><h2>Heading 1</h2></div><div>Heading 2</div><div><em>Italic text</em><br><strong>Bold text<br></strong><del>Striked text</del></div><div><br><ol><li>ordered</li><li>list</li></ol></div><div><br><ul><li>unordered</li><li>list</li></ul></div><div><br><a href=\"https://google.com\">Some-link</a><br><br></div>",
+    "resources": [
+        {
+            "id": 20714,
+            "type": ".mp4",
+            "title": "Test file",
+            "link": "https://cdn-dev.xperiencify.com/users/27392/resources/20714/big_buck_bunny_720p_2mb.mp4",
+            "order": 20714,
+            "file_name": "big_buck_bunny_720p_2mb",
+            "entity": 48954
+        }
+    ],
+    "video_percentage": 0,
+    "video_url": "https://cdn-dev.xperiencify.com/users/27392/trainings/48954/1669703616821__transcode"
+}
