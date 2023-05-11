@@ -11,8 +11,8 @@ StudentCustomField _$StudentCustomFieldFromJson(Map<String, dynamic> json) =>
       site: json['field_site'] as int,
       slug: json['field_slug'] as String,
       title: json['field_title'] as String,
-      value: json['value'] as String,
-      editable: json['editable'] as bool,
+      value: json['value'] as String?,
+      editable: json['editable'] as bool?,
     );
 
 Map<String, dynamic> _$StudentCustomFieldToJson(StudentCustomField instance) =>

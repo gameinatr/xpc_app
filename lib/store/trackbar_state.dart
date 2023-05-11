@@ -12,7 +12,6 @@ class TrackBarBloc extends Bloc<TrackBarEvent, TrackBarState> {
       try {
         emit(TrackBarState(trackbar: event.trackbar));
       } catch (err) {
-        print('user err: $err');
         emit(TrackBarState(trackbar: initialTrackbar));
       }
     }));

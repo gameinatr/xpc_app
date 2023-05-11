@@ -24,6 +24,7 @@ abstract class _$AppRouter extends RootStackRouter {
           courseId: args.courseId,
           moduleId: args.moduleId,
           trainingId: args.trainingId,
+          trainingTitle: args.trainingTitle,
         ),
       );
     },
@@ -34,11 +35,9 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
     CoursesListRoute.name: (routeData) {
-      final args = routeData.argsAs<CoursesListRouteArgs>(
-          orElse: () => const CoursesListRouteArgs());
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: CoursesListScreen(key: args.key),
+        child: const CoursesListScreen(),
       );
     },
     CourseHomeRoute.name: (routeData) {
@@ -49,6 +48,7 @@ abstract class _$AppRouter extends RootStackRouter {
           key: args.key,
           courseId: args.courseId,
           courseLink: args.courseLink,
+          courseTitle: args.courseTitle,
         ),
       );
     },
@@ -64,6 +64,7 @@ class SingleTrainingRoute extends PageRouteInfo<SingleTrainingRouteArgs> {
     required int courseId,
     required int moduleId,
     required int trainingId,
+    required String trainingTitle,
     List<PageRouteInfo>? children,
   }) : super(
           SingleTrainingRoute.name,
@@ -73,6 +74,7 @@ class SingleTrainingRoute extends PageRouteInfo<SingleTrainingRouteArgs> {
             courseId: courseId,
             moduleId: moduleId,
             trainingId: trainingId,
+            trainingTitle: trainingTitle,
           ),
           initialChildren: children,
         );
@@ -90,6 +92,7 @@ class SingleTrainingRouteArgs {
     required this.courseId,
     required this.moduleId,
     required this.trainingId,
+    required this.trainingTitle,
   });
 
   final Key? key;
@@ -102,9 +105,11 @@ class SingleTrainingRouteArgs {
 
   final int trainingId;
 
+  final String trainingTitle;
+
   @override
   String toString() {
-    return 'SingleTrainingRouteArgs{key: $key, siteId: $siteId, courseId: $courseId, moduleId: $moduleId, trainingId: $trainingId}';
+    return 'SingleTrainingRouteArgs{key: $key, siteId: $siteId, courseId: $courseId, moduleId: $moduleId, trainingId: $trainingId, trainingTitle: $trainingTitle}';
   }
 }
 
@@ -124,31 +129,16 @@ class LoginRoute extends PageRouteInfo<void> {
 
 /// generated route for
 /// [CoursesListScreen]
-class CoursesListRoute extends PageRouteInfo<CoursesListRouteArgs> {
-  CoursesListRoute({
-    Key? key,
-    List<PageRouteInfo>? children,
-  }) : super(
+class CoursesListRoute extends PageRouteInfo<void> {
+  const CoursesListRoute({List<PageRouteInfo>? children})
+      : super(
           CoursesListRoute.name,
-          args: CoursesListRouteArgs(key: key),
           initialChildren: children,
         );
 
   static const String name = 'CoursesListRoute';
 
-  static const PageInfo<CoursesListRouteArgs> page =
-      PageInfo<CoursesListRouteArgs>(name);
-}
-
-class CoursesListRouteArgs {
-  const CoursesListRouteArgs({this.key});
-
-  final Key? key;
-
-  @override
-  String toString() {
-    return 'CoursesListRouteArgs{key: $key}';
-  }
+  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for
@@ -158,6 +148,7 @@ class CourseHomeRoute extends PageRouteInfo<CourseHomeRouteArgs> {
     Key? key,
     required int courseId,
     required String courseLink,
+    required String courseTitle,
     List<PageRouteInfo>? children,
   }) : super(
           CourseHomeRoute.name,
@@ -165,6 +156,7 @@ class CourseHomeRoute extends PageRouteInfo<CourseHomeRouteArgs> {
             key: key,
             courseId: courseId,
             courseLink: courseLink,
+            courseTitle: courseTitle,
           ),
           initialChildren: children,
         );
@@ -180,6 +172,7 @@ class CourseHomeRouteArgs {
     this.key,
     required this.courseId,
     required this.courseLink,
+    required this.courseTitle,
   });
 
   final Key? key;
@@ -188,8 +181,10 @@ class CourseHomeRouteArgs {
 
   final String courseLink;
 
+  final String courseTitle;
+
   @override
   String toString() {
-    return 'CourseHomeRouteArgs{key: $key, courseId: $courseId, courseLink: $courseLink}';
+    return 'CourseHomeRouteArgs{key: $key, courseId: $courseId, courseLink: $courseLink, courseTitle: $courseTitle}';
   }
 }

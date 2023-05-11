@@ -9,7 +9,7 @@ class SingleCourse {
   String title;
   bool draft;
   String videoLink;
-  String mobileDescription;
+  String description;
   List<NextTraining> nextTrainings;
 
   SingleCourse({
@@ -18,7 +18,7 @@ class SingleCourse {
     required this.draft,
     required this.title,
     required this.videoLink,
-    required this.mobileDescription,
+    required this.description,
     required this.nextTrainings,
   });
 

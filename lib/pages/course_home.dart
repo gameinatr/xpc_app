@@ -1,29 +1,30 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:xpc_app/constants/styling.dart';
 import 'package:xpc_app/store/single_course_state.dart';
-import 'package:xpc_app/store/trackbar_state.dart';
-import 'package:xpc_app/store/user_state.dart';
+import 'package:xpc_app/store/site_state.dart';
+import 'package:xpc_app/store/student_user_state.dart';
 import 'package:xpc_app/widgets/next_training_item.dart';
-
-// const String videoUrl =
-//     'https://cdn-dev.xperiencify.com/users/27392/trainings/48954/1669703616821__transcode/playlist.m3u8';
-// //'https://youtu.be/G8nNGk6LHaM';
+import 'package:xpc_app/widgets/tokenized_html.dart';
+import 'package:xpc_app/widgets/video_player_widget.dart';
 
 @RoutePage()
 class CourseHomeScreen extends StatefulWidget {
   final int courseId;
   final String courseLink;
+  final String courseTitle;
   const CourseHomeScreen(
-      {super.key, required this.courseId, required this.courseLink});
+      {super.key,
+      required this.courseId,
+      required this.courseLink,
+      required this.courseTitle});
 
   @override
   State<CourseHomeScreen> createState() => _CourseHomeScreenState();
 }
 
 class _CourseHomeScreenState extends State<CourseHomeScreen> {
-  final List<String> pages = ['Home', 'All Trainings'];
-
   @override
   void didChangeDependencies() {
     final SingleCourseBloc singleCourseBloc =
@@ -37,21 +38,8 @@ class _CourseHomeScreenState extends State<CourseHomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Course Home'),
-      ),
-      endDrawer: Drawer(
-        child: ListView.builder(
-            itemCount: pages.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Text(
-                  pages[index],
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w400),
-                ),
-              );
-            }),
+        title: Text(widget.courseTitle),
+        backgroundColor: const Color(0xff5ce0aa),
       ),
       body: BlocBuilder<SingleCourseBloc, SingleCourseState>(
         builder: (context, state) {
@@ -61,34 +49,38 @@ class _CourseHomeScreenState extends State<CourseHomeScreen> {
             );
           }
           if (state is SingleCourseLoaded) {
-            final UserBloc userBloc = BlocProvider.of<UserBloc>(context);
-            userBloc.add(UserLoadEvent(siteId: (state.course.siteId)));
-            // stack is introduced to possibly add invokable trackbar later
-            return Stack(children: [
-              SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Text(state.course.title),
-                    ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: state.course.nextTrainings.length,
-                      itemBuilder: (context, index) {
-                        return NextTrainingItem(
-                            nextTraining: state.course.nextTrainings[index],
-                            siteId: state.course.siteId,
-                            courseId: state.course.id);
-                      },
-                    ),
-                    BlocBuilder<TrackBarBloc, TrackBarState>(
-                      builder: (context, state) {
-                        return Text(state.trackbar.earnedXp.toString());
-                      },
-                    ),
-                  ],
-                ),
+            final StudentUserBloc userBloc =
+                BlocProvider.of<StudentUserBloc>(context);
+            final SchoolSiteBloc siteBloc =
+                BlocProvider.of<SchoolSiteBloc>(context);
+            userBloc.add(UserLoadEvent(siteId: state.course.siteId));
+            siteBloc.add(SiteLoadEvent(siteId: state.course.siteId));
+            return SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
+              child: Column(
+                children: [
+                  VideoPlayerWidget(videoUrl: state.course.videoLink),
+                  const SizedBox(height: 15),
+                  TokenizedHtml(htmlData: state.course.description),
+                  const SizedBox(height: 15),
+                  const Text(
+                    'Next Up Trainings',
+                    style: ThemeTextStyles.headline
+                  ),
+                  ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: state.course.nextTrainings.length,
+                    itemBuilder: (context, index) {
+                      return NextTrainingItem(
+                          nextTraining: state.course.nextTrainings[index],
+                          siteId: state.course.siteId,
+                          courseId: state.course.id);
+                    },
+                  ),
+                ],
               ),
-            ]);
+            );
           }
           if (state is SingleCourseLoadFailed) {
             return Center(

@@ -1,10 +1,10 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:xpc_app/models/users/student_custom_field_model.dart';
 import 'package:xpc_app/models/users/student_tag_model.dart';
-part 'user_model.g.dart';
+part 'student_user_model.g.dart';
 
 @JsonSerializable()
-class User {
+class StudentUser {
   int id;
   String bio;
   String email;
@@ -27,7 +27,7 @@ class User {
   @JsonKey(name: 'user_tags')
   List<StudentTag>? studentTags;
 
-  User(
+  StudentUser(
       {required this.id,
       required this.bio,
       required this.email,
@@ -43,7 +43,7 @@ class User {
       this.studentCustomFields,
       this.studentTags});
 
-  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+  factory StudentUser.fromJson(Map<String, dynamic> json) => _$StudentUserFromJson(json);
 
-  Map<String, dynamic> toJson() => _$UserToJson(this);
+  Map<String, dynamic> toJson() => _$StudentUserToJson(this);
 }

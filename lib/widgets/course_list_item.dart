@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:xpc_app/constants/styling.dart';
 import 'package:xpc_app/models/courses/login_course_model.dart';
 import 'package:xpc_app/routing/app_router.dart';
 
@@ -12,7 +13,9 @@ class CourseListItem extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         AutoRouter.of(context).push(CourseHomeRoute(
-            courseId: courseItem.id, courseLink: courseItem.link));
+            courseId: courseItem.id,
+            courseLink: courseItem.link,
+            courseTitle: courseItem.title));
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 0),
@@ -21,33 +24,24 @@ class CourseListItem extends StatelessWidget {
           children: [
             CircleAvatar(
                 radius: 30, backgroundImage: NetworkImage(courseItem.poster)),
-            SizedBox(width: 15),
+            const SizedBox(width: 15),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   courseItem.title,
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      height: 24 / 16),
+                  style: ThemeTextStyles.semiBoldMediumSize,
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   children: [
                     Text(
                       '${courseItem.moduleCount} modules',
-                      style:
-                          TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                      style: ThemeTextStyles.boldSmallSize,
                     ),
-                    SizedBox(width: 10),
-                    Text(
-                      '${courseItem.progress}% completed',
-                      style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xff9fa6b2)),
-                    )
+                    const SizedBox(width: 10),
+                    Text('${courseItem.progress}% completed',
+                        style: ThemeTextStyles.courseCardProgress)
                   ],
                 )
               ],

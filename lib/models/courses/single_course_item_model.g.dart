@@ -12,7 +12,7 @@ SingleCourse _$SingleCourseFromJson(Map<String, dynamic> json) => SingleCourse(
       draft: json['draft'] as bool,
       title: json['title'] as String,
       videoLink: json['videoLink'] as String,
-      mobileDescription: json['mobileDescription'] as String,
+      description: json['description'] as String,
       nextTrainings: (json['nextTrainings'] as List<dynamic>)
           .map((e) => NextTraining.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -25,6 +25,6 @@ Map<String, dynamic> _$SingleCourseToJson(SingleCourse instance) =>
       'title': instance.title,
       'draft': instance.draft,
       'videoLink': instance.videoLink,
-      'mobileDescription': instance.mobileDescription,
+      'description': instance.description,
       'nextTrainings': instance.nextTrainings,
     };

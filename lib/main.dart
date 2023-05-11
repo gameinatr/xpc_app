@@ -1,18 +1,56 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:xpc_app/routing/app_router.dart';
 import 'package:xpc_app/store/courses_state.dart';
 import 'package:xpc_app/store/single_course_state.dart';
 import 'package:xpc_app/store/single_training_state.dart';
 import 'package:get_it/get_it.dart';
+import 'package:xpc_app/store/site_state.dart';
 import 'package:xpc_app/store/trackbar_state.dart';
-import 'package:xpc_app/store/user_state.dart';
+import 'package:xpc_app/store/student_user_state.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 GetIt getIt = GetIt.instance;
 
-void main() {
+void main() async {
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   getIt.registerSingleton<AppRouter>(AppRouter());
-  runApp(XperiencifyApp());
+  runApp(const XperiencifyApp());
+}
+
+class UpdateScreen extends StatelessWidget {
+  const UpdateScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('Your application version is obsolete.'),
+                const Text('Please, update to the latest version'),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                    onPressed: () {
+                      // TODO: add actual app address
+                      launchUrl(Uri.parse('https://google.com'));
+                    },
+                    child: const Text('Update')),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class XperiencifyApp extends StatefulWidget {
@@ -24,17 +62,37 @@ class XperiencifyApp extends StatefulWidget {
 
 class _XperiencifyAppState extends State<XperiencifyApp> {
   final AppRouter appRouter = getIt<AppRouter>();
+  bool isLatestVersion = false;
+  Future<bool> compareVersions() async {
+    final Dio initialDio = Dio();
+    final PackageInfo package = await PackageInfo.fromPlatform();
+    final latestVersion = await initialDio.get(
+        'https://api.xperiencify.dev/api/v1/third-party/mobile-version-control/');
+    return package.version == latestVersion.data['version'];
+  }
+
+  @override
+  void didChangeDependencies() async {
+    isLatestVersion = await compareVersions();
+    setState(() {});
+    FlutterNativeSplash.remove();
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
+    print('build $isLatestVersion');
+    if (!isLatestVersion) return const UpdateScreen();
     return MultiBlocProvider(
       providers: [
+        BlocProvider(create: (_) => CoursesBloc()),
         BlocProvider(create: (_) => SingleCourseBloc()),
         BlocProvider(
           create: (_) => SingleTrainingBloc(),
         ),
-        BlocProvider(create: (_) => UserBloc()),
-        BlocProvider(create: (_) => TrackBarBloc())
+        BlocProvider(create: (_) => StudentUserBloc()),
+        BlocProvider(create: (_) => TrackBarBloc()),
+        BlocProvider(create: (_) => SchoolSiteBloc()),
       ],
       child: MaterialApp.router(
         title: "XPC App",

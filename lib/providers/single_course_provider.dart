@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:xpc_app/models/trainings/next_training_model.dart';
 import 'package:xpc_app/models/courses/single_course_item_model.dart';
 import 'package:xpc_app/utils/index.dart';
@@ -26,11 +25,11 @@ class SingleCourseProvider {
     return SingleCourse(
         draft: courseData['draft'],
         id: courseId,
-        mobileDescription: 'Some Description That Will Be Added Later',
+        description: courseData['description'],
         nextTrainings: nextUpTrainingsList,
         siteId: siteId,
         title: courseData['title'],
         videoLink:
-            'https://cdn-dev.xperiencify.com/users/27392/trainings/48954/1669703616821__transcode/playlist.m3u8');
+            'https://cdn-dev.xperiencify.com/users/27392/trainings/48954/1669703616821__transcode');
   }
 }

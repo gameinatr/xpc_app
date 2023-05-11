@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:xpc_app/constants/general.dart';
 import 'package:xpc_app/main.dart';
 import 'package:xpc_app/routing/app_router.dart';
 import 'package:xpc_app/storage/secure_storage.dart';
@@ -16,7 +17,7 @@ String replaceTokens(String initialString, Map<String, String> tokensMap) {
       returnString = returnString.replaceAll(key, value);
     },
   );
-  return returnString;
+  return '<div>$returnString</div>';
 }
 
 class Authorized {
@@ -24,7 +25,7 @@ class Authorized {
   final _storage = SecureStorage();
   final _dio = Dio();
 
-  Authorized({this.baseUrl = 'https://api.xperiencify.dev/api/'}) {
+  Authorized({this.baseUrl = API_URL}) {
     _dio.options.baseUrl = baseUrl;
   }
 
@@ -46,10 +47,6 @@ class Authorized {
     };
     _dio.interceptors
         .add(InterceptorsWrapper(onRequest: (options, handler) async {
-      // print(
-      //     'acc exp: $accessExpiry, ${DateTime.fromMillisecondsSinceEpoch(int.parse(accessExpiry))}');
-      // print(
-      //     'ref exp: $refreshExpiry, ${DateTime.fromMillisecondsSinceEpoch(int.parse(refreshExpiry))}');
       final isAccExpired =
           DateTime.fromMillisecondsSinceEpoch(int.parse(accessExpiry))
                   .difference(DateTime.now())
@@ -64,29 +61,12 @@ class Authorized {
         getIt<AppRouter>().push(const LoginRoute());
       }
       if (isAccExpired) {
-        print('need refresh!');
-        // TODO: implement refresh
-        final _freshDio = Dio();
-        final newRefreshResponse = await _freshDio.post(
-            'https://api.xperiencify.dev/api/token/refresh/',
+        final noInterceptorDio = Dio();
+        final newRefreshResponse = await noInterceptorDio.post(
+            '${API_URL}token/refresh/',
             data: {'refresh': refreshToken});
         if (newRefreshResponse.statusCode == 200) {
-          final tokenData = newRefreshResponse.data;
-          Base64Codec base64 = const Base64Codec();
-          final decodedAccess = utf8
-              .fuse(base64)
-              .decode(base64.normalize(tokenData['access'].split('.')[1]));
-          final decodedRefresh = utf8
-              .fuse(base64)
-              .decode(base64.normalize(tokenData['refresh'].split('.')[1]));
-          final accessExpiry = jsonDecode(decodedAccess)['exp'];
-          final refreshExpiry = jsonDecode(decodedRefresh)['exp'];
-          _storage.writeSecData('access_token', tokenData['access']);
-          _storage.writeSecData('refresh_token', tokenData['refresh']);
-          _storage.writeSecData(
-              'access_token_exp', (accessExpiry * 1000).toString());
-          _storage.writeSecData(
-              'refresh_token_exp', (refreshExpiry * 1000).toString());
+          rewriteTokens(newRefreshResponse);
         } else {
           getIt<AppRouter>().push(const LoginRoute());
         }
@@ -120,4 +100,22 @@ class Authorized {
         throw Exception('Invalid HTTP method');
     }
   }
+}
+
+void rewriteTokens(Response response) {
+  final tokenData = response.data;
+  final storage = SecureStorage();
+  Base64Codec base64 = const Base64Codec();
+  final decodedAccess = utf8
+      .fuse(base64)
+      .decode(base64.normalize(tokenData['access'].split('.')[1]));
+  final decodedRefresh = utf8
+      .fuse(base64)
+      .decode(base64.normalize(tokenData['refresh'].split('.')[1]));
+  final accessExpiry = jsonDecode(decodedAccess)['exp'];
+  final refreshExpiry = jsonDecode(decodedRefresh)['exp'];
+  storage.writeSecData('access_token', tokenData['access']);
+  storage.writeSecData('refresh_token', tokenData['refresh']);
+  storage.writeSecData('access_token_exp', (accessExpiry * 1000).toString());
+  storage.writeSecData('refresh_token_exp', (refreshExpiry * 1000).toString());
 }

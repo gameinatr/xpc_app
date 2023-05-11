@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:xpc_app/models/trainings/single_training_model.dart';
 import 'package:xpc_app/utils/index.dart';
 

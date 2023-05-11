@@ -1,9 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:xpc_app/constants/styling.dart';
 import 'package:xpc_app/routing/app_router.dart';
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:xpc_app/storage/secure_storage.dart';
+import 'package:xpc_app/utils/index.dart';
+import '../constants/general.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -14,7 +17,8 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   bool _loading = false;
-  final String loginUrl = 'https://api.xperiencify.dev/api/token/';
+  bool _loginFailed = false;
+  final String loginUrl = '${API_URL}token/';
   final _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -31,6 +35,7 @@ class _LoginFormState extends State<LoginForm> {
 
   Future<void> _sendLoginRequest() async {
     setState(() {
+      _loginFailed = false;
       _loading = true;
     });
 
@@ -48,38 +53,24 @@ class _LoginFormState extends State<LoginForm> {
             data: body);
         final data = response.data;
         if (response.statusCode == 200) {
-          Base64Codec base64 = const Base64Codec();
-          final decodedAccess = utf8
-              .fuse(base64)
-              .decode(base64.normalize(data['access'].split('.')[1]));
-          final decodedRefresh = utf8
-              .fuse(base64)
-              .decode(base64.normalize(data['refresh'].split('.')[1]));
-          final accessExpiry = jsonDecode(decodedAccess)['exp'];
-          final refreshExpiry = jsonDecode(decodedRefresh)['exp'];
-          _storage.writeSecData('access_token', data['access']);
-          _storage.writeSecData('refresh_token', data['refresh']);
-          _storage.writeSecData(
-              'access_token_exp', (accessExpiry * 1000).toString());
-          _storage.writeSecData(
-              'refresh_token_exp', (refreshExpiry * 1000).toString());
-          AutoRouter.of(context).push(CoursesListRoute());
+          rewriteTokens(response);
+          AutoRouter.of(context).push(const CoursesListRoute());
         } else {
-          // Handle the error
-          print('Failed to load data');
           throw Exception(data);
         }
       }
     } catch (err) {
-      print(err);
+      setState(() {
+        _loginFailed = true;
+        _loading = false;
+      });
+      throw Exception(err);
     }
 
     setState(() {
       _loading = false;
     });
   }
-
-  // TODO: possibly remake it with form builder?
 
   @override
   Widget build(BuildContext context) {
@@ -140,11 +131,16 @@ class _LoginFormState extends State<LoginForm> {
             },
             child: const Padding(
               padding: EdgeInsets.all(12.0),
-              child: Text(
-                'Login',
-                style: TextStyle(fontSize: 16),
-              ),
+              child: Text('Login', style: ThemeTextStyles.semiBoldMediumSize),
             ),
+          ),
+        if (_loginFailed)
+          const Column(
+            children: [
+              SizedBox(height: 30),
+              Text(
+                  'Sorry, can/t log you in using this info. In most of these cases, either your password or email is typed incorrectly. Can you kindly check?'),
+            ],
           ),
         if (_loading) const Center(child: CircularProgressIndicator())
       ],

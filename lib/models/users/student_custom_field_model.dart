@@ -9,15 +9,15 @@ class StudentCustomField {
   String slug;
   @JsonKey(name: 'field_title')
   String title;
-  String value;
-  bool editable;
+  String? value;
+  bool? editable;
 
   StudentCustomField(
       {required this.site,
       required this.slug,
       required this.title,
-      required this.value,
-      required this.editable});
+      this.value,
+      this.editable});
 
   factory StudentCustomField.fromJson(Map<String, dynamic> json) =>
       _$StudentCustomFieldFromJson(json);

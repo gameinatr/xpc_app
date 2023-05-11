@@ -1,8 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:xpc_app/constants/general.dart';
-
-
 import 'package:xpc_app/widgets/login_form.dart';
 
 @RoutePage()
@@ -24,8 +22,8 @@ class LoginPage extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                   color: Colors.white, borderRadius: BorderRadius.circular(8)),
-              child: Padding(
-                  padding: const EdgeInsets.all(35.0), child: LoginForm()),
+              child: const Padding(
+                  padding: EdgeInsets.all(35.0), child: LoginForm()),
             ),
           )
         ],

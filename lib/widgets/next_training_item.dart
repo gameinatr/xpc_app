@@ -1,7 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:xpc_app/constants/styling.dart';
 import 'package:xpc_app/models/trainings/next_training_model.dart';
 import 'package:xpc_app/routing/app_router.dart';
+import 'package:xpc_app/widgets/next_training_status.dart';
 
 class NextTrainingItem extends StatelessWidget {
   final NextTraining nextTraining;
@@ -12,8 +14,6 @@ class NextTrainingItem extends StatelessWidget {
       required this.nextTraining,
       required this.siteId,
       required this.courseId});
-
-  // TODO: implement statuses
 
   @override
   Widget build(BuildContext context) {
@@ -26,13 +26,20 @@ class NextTrainingItem extends StatelessWidget {
             courseId: courseId,
             moduleId: nextTraining.parentId,
             trainingId: nextTraining.id,
+            trainingTitle: nextTraining.title,
           ));
         },
         child: Column(
           children: [
             ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: Image.network(nextTraining.thumbnail)),
+                child: AspectRatio(
+                    aspectRatio: 2 / 1,
+                    child: Image.network(
+                      nextTraining.thumbnail,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ))),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: Row(
@@ -41,9 +48,9 @@ class NextTrainingItem extends StatelessWidget {
                 children: [
                   Text(
                     nextTraining.title,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                    style: ThemeTextStyles.boldMediumSize,
                   ),
-                  Text('Awaiting start'),
+                  NextTrainingStatus(status: nextTraining.awaitingStatus),
                   Text('${nextTraining.xp.toString()} XP'),
                 ],
               ),
