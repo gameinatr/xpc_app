@@ -1,11 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pod_player_new/pod_player_new.dart';
 import 'package:xpc_app/store/single_training_state.dart';
 import 'package:xpc_app/widgets/actions/action_item.dart';
-import 'package:xpc_app/widgets/tokenized_html.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:xpc_app/widgets/tokenized_html.dart';
 import 'package:xpc_app/widgets/video_player_widget.dart';
 
 @RoutePage()
@@ -29,7 +28,6 @@ class SingleTrainingPage extends StatefulWidget {
 }
 
 class _SingleTrainingPageState extends State<SingleTrainingPage> {
-  PodPlayerController? podPlayerController;
   InAppWebViewController? _webViewController;
   @override
   void didChangeDependencies() {
@@ -66,7 +64,7 @@ class _SingleTrainingPageState extends State<SingleTrainingPage> {
                   children: [
                     VideoPlayerWidget(videoUrl: state.training.videoUrl),
                     const SizedBox(height: 15),
-                    // TokenizedHtml(htmlData: state.training.notes),
+                    TokenizedHtml(htmlData: state.training.notes),
                     ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,

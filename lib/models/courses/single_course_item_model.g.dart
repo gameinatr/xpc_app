@@ -16,6 +16,8 @@ SingleCourse _$SingleCourseFromJson(Map<String, dynamic> json) => SingleCourse(
       nextTrainings: (json['nextTrainings'] as List<dynamic>)
           .map((e) => NextTraining.fromJson(e as Map<String, dynamic>))
           .toList(),
+      xpLabel: json['xpLabel'] as String,
+      xxpLabel: json['xxpLabel'] as String,
     );
 
 Map<String, dynamic> _$SingleCourseToJson(SingleCourse instance) =>
@@ -26,5 +28,7 @@ Map<String, dynamic> _$SingleCourseToJson(SingleCourse instance) =>
       'draft': instance.draft,
       'videoLink': instance.videoLink,
       'description': instance.description,
+      'xpLabel': instance.xpLabel,
+      'xxpLabel': instance.xxpLabel,
       'nextTrainings': instance.nextTrainings,
     };

@@ -10,6 +10,8 @@ class SingleCourse {
   bool draft;
   String videoLink;
   String description;
+  String xpLabel;
+  String xxpLabel;
   List<NextTraining> nextTrainings;
 
   SingleCourse({
@@ -20,6 +22,8 @@ class SingleCourse {
     required this.videoLink,
     required this.description,
     required this.nextTrainings,
+    required this.xpLabel,
+    required this.xxpLabel
   });
 
   factory SingleCourse.fromJson(Map<String, dynamic> json) =>

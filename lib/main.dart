@@ -9,6 +9,7 @@ import 'package:xpc_app/store/single_course_state.dart';
 import 'package:xpc_app/store/single_training_state.dart';
 import 'package:get_it/get_it.dart';
 import 'package:xpc_app/store/site_state.dart';
+import 'package:xpc_app/store/tokens_state.dart';
 import 'package:xpc_app/store/trackbar_state.dart';
 import 'package:xpc_app/store/student_user_state.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -79,20 +80,22 @@ class _XperiencifyAppState extends State<XperiencifyApp> {
     super.didChangeDependencies();
   }
 
+  final tokensBloc = TokensBloc();
+
   @override
   Widget build(BuildContext context) {
-    print('build $isLatestVersion');
     if (!isLatestVersion) return const UpdateScreen();
     return MultiBlocProvider(
       providers: [
+        BlocProvider.value(value: tokensBloc),
+        BlocProvider(create: (_) => SingleCourseBloc(tokensBloc: tokensBloc)),
+        BlocProvider(create: (_) => SchoolSiteBloc(tokensBloc: tokensBloc)),
+        BlocProvider(create: (_) => StudentUserBloc(tokensBloc: tokensBloc)),
         BlocProvider(create: (_) => CoursesBloc()),
-        BlocProvider(create: (_) => SingleCourseBloc()),
         BlocProvider(
           create: (_) => SingleTrainingBloc(),
         ),
-        BlocProvider(create: (_) => StudentUserBloc()),
         BlocProvider(create: (_) => TrackBarBloc()),
-        BlocProvider(create: (_) => SchoolSiteBloc()),
       ],
       child: MaterialApp.router(
         title: "XPC App",

@@ -29,6 +29,8 @@ class SingleCourseProvider {
         nextTrainings: nextUpTrainingsList,
         siteId: siteId,
         title: courseData['title'],
+        xpLabel: courseData['configs']['bottom_bar']['xp_label'],
+        xxpLabel: courseData['configs']['bottom_bar']['xxp_label'],
         videoLink:
             'https://cdn-dev.xperiencify.com/users/27392/trainings/48954/1669703616821__transcode');
   }

@@ -7,7 +7,7 @@ class ThemeTextStyles {
   static const boldSmallSize =
       TextStyle(fontSize: 13, fontWeight: FontWeight.w600);
   static const boldMediumSize =
-      TextStyle(fontSize: 18, fontWeight: FontWeight.w600);
+      TextStyle(fontSize: 20, fontWeight: FontWeight.w600);
   static const courseCardProgress = TextStyle(
       fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xff9fa6b2));
 }

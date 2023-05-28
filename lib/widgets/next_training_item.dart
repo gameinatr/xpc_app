@@ -1,8 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:xpc_app/constants/styling.dart';
 import 'package:xpc_app/models/trainings/next_training_model.dart';
 import 'package:xpc_app/routing/app_router.dart';
+import 'package:xpc_app/store/single_course_state.dart';
 import 'package:xpc_app/widgets/next_training_status.dart';
 
 class NextTrainingItem extends StatelessWidget {
@@ -17,9 +19,17 @@ class NextTrainingItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(24),
+    String xpLabel = 'XP';
+    String xxpLabel = 'XXP';
+    SingleCourseState courseState = context.watch<SingleCourseBloc>().state;
+    if (courseState is SingleCourseLoaded) {
+      xpLabel = courseState.course.xpLabel;
+      xxpLabel = courseState.course.xxpLabel;
+    }
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 20),
       child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: () {
           AutoRouter.of(context).push(SingleTrainingRoute(
             siteId: siteId,
@@ -29,33 +39,69 @@ class NextTrainingItem extends StatelessWidget {
             trainingTitle: nextTraining.title,
           ));
         },
-        child: Column(
-          children: [
-            ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: AspectRatio(
-                    aspectRatio: 2 / 1,
-                    child: Image.network(
-                      nextTraining.thumbnail,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ))),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    nextTraining.title,
-                    style: ThemeTextStyles.boldMediumSize,
+        child: Material(
+          elevation: 2,
+          borderRadius: BorderRadius.circular(8),
+          child: IntrinsicHeight(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(
+                  width: 150,
+                  child: ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(8),
+                          topRight: Radius.circular(8)),
+                      child: AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: Image.network(
+                            nextTraining.thumbnail,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ))),
+                ),
+                const SizedBox(height: 20),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          nextTraining.title,
+                          style: ThemeTextStyles.boldMediumSize,
+                        ),
+                        const SizedBox(height: 10),
+                        NextTrainingStatus(status: nextTraining.awaitingStatus),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            if (nextTraining.xp != null && nextTraining.xp! > 0)
+                              Text(
+                                '${nextTraining.xp.toString()} $xpLabel',
+                                style: ThemeTextStyles.semiBoldMediumSize,
+                              ),
+                            const SizedBox(width: 6),
+                            if (nextTraining.xxp != null &&
+                                nextTraining.xxp! > 0)
+                              Text(
+                                '${nextTraining.xxp.toString()} $xxpLabel',
+                                style: ThemeTextStyles.semiBoldMediumSize,
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 14),
+                      ],
+                    ),
                   ),
-                  NextTrainingStatus(status: nextTraining.awaitingStatus),
-                  Text('${nextTraining.xp.toString()} XP'),
-                ],
-              ),
-            )
-          ],
+                )
+              ],
+            ),
+          ),
         ),
       ),
     );

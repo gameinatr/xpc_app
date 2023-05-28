@@ -6,6 +6,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:xpc_app/constants/general.dart';
 import 'package:xpc_app/models/actions/action_model.dart';
 import 'package:xpc_app/models/trackbar_model.dart';
+import 'package:xpc_app/store/single_course_state.dart';
 import 'package:xpc_app/store/trackbar_state.dart';
 import 'package:xpc_app/utils/index.dart';
 import 'package:xpc_app/widgets/actions/action_checkmark.dart';
@@ -68,7 +69,8 @@ class _TrainingActionItemState extends State<TrainingActionItem> {
                 minutes: action.multichoiceSettings!.tryItPeriodNumber.toInt()))
             .difference(DateTime.now());
     currentAnswers =
-        answerDelay.inSeconds > 0 ? action.lastAnswers?.answers ?? [] : [];
+        //answerDelay.inSeconds > 0 ? action.lastAnswers?.answers ?? [] : [];
+        action.lastAnswers?.answers ?? [];
 
     if (answerDelay.inSeconds > 0 && !isCorrectAnswer) {
       startTimer();
@@ -130,6 +132,13 @@ class _TrainingActionItemState extends State<TrainingActionItem> {
 
   @override
   Widget build(BuildContext context) {
+    String xpLabel = 'XP';
+    String xxpLabel = 'XXP';
+    SingleCourseState courseState = context.watch<SingleCourseBloc>().state;
+    if (courseState is SingleCourseLoaded) {
+      xpLabel = courseState.course.xpLabel;
+      xxpLabel = courseState.course.xxpLabel;
+    }
     late List<Widget> widgets;
     switch (action.displayType) {
       case ActionTypes.checkbox:
@@ -152,7 +161,7 @@ class _TrainingActionItemState extends State<TrainingActionItem> {
                 Expanded(
                     child: TokenizedHtml(
                         htmlData:
-                            '${action.value} ${action.type.toUpperCase()}')),
+                            '${action.value} ${action.type == 'xp' ? xpLabel : xxpLabel}')),
               ],
             ),
           ];
@@ -198,7 +207,7 @@ class _TrainingActionItemState extends State<TrainingActionItem> {
                 Expanded(
                     child: TokenizedHtml(
                         htmlData:
-                            '${action.value} ${action.type.toUpperCase()}')),
+                            '${action.value} ${action.type == 'xp' ? xpLabel : xxpLabel}')),
               ],
             ),
           ];
@@ -242,7 +251,7 @@ class _TrainingActionItemState extends State<TrainingActionItem> {
                 Expanded(
                     child: TokenizedHtml(
                         htmlData:
-                            '${action.value} ${action.type.toUpperCase()}')),
+                            '${action.value} ${action.type == 'xp' ? xpLabel : xxpLabel}')),
               ],
             ),
             if (!isCorrectAnswer && answerDelay!.inSeconds > 0)

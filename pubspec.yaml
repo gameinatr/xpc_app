@@ -41,7 +41,6 @@ dependencies:
   auto_route: ^6.0.5
   flutter_secure_storage: ^8.0.0
   flutter_bloc: ^8.1.2
-  pod_player_new: ^0.0.8
   dio: ^5.1.1
   get_it: ^7.3.0
   flutter_inappwebview: ^5.7.2+3
