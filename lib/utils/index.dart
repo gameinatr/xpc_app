@@ -61,10 +61,10 @@ class Authorized {
         getIt<AppRouter>().push(const LoginRoute());
       }
       if (isAccExpired) {
+        print('need refresh!');
         final noInterceptorDio = Dio();
-        final newRefreshResponse = await noInterceptorDio.post(
-            '${API_URL}token/refresh/',
-            data: {'refresh': refreshToken});
+        final newRefreshResponse = await noInterceptorDio
+            .post('${API_URL}token/refresh/', data: {'refresh': refreshToken});
         if (newRefreshResponse.statusCode == 200) {
           rewriteTokens(newRefreshResponse);
         } else {
@@ -118,4 +118,42 @@ void rewriteTokens(Response response) {
   storage.writeSecData('refresh_token', tokenData['refresh']);
   storage.writeSecData('access_token_exp', (accessExpiry * 1000).toString());
   storage.writeSecData('refresh_token_exp', (refreshExpiry * 1000).toString());
+}
+
+String? getVideoUrlFromCourseData(dynamic courseData) {
+  try {
+  final customBlocksList = courseData['pages']
+      .toList()[0]['components']
+      .toList()
+      .where((component) => component['component'] == 'Custom Block')
+      .toList()
+    ..sort((a, b) => a['order'].toString().compareTo(b['order'].toString()));
+  final customBlockWithVideo = customBlocksList.where((customBlock) {
+    final columns = customBlock['props']['sectionSettings']['columns'].toList();
+    final columnsWithVideoElements = columns.where((column) {
+      final videoElementsLength = column['elements']
+          .toList()
+          .where((element) => element['elementType'] == 'video')
+          .length;
+      return videoElementsLength == 0 ? false : true;
+    }).toList();
+    return columnsWithVideoElements.length == 0 ? false : true;
+  }).toList()[0];
+  final courseVideoUrl = customBlockWithVideo['props']['sectionSettings']
+              ['columns']
+          .toList()
+          .firstWhere((column) {
+    final videoElementsLength = column['elements']
+        .toList()
+        .where((element) => element['elementType'] == 'video')
+        .length;
+    return videoElementsLength == 0 ? false : true;
+  })['elements'].firstWhere(
+              (element) => element['elementType'] == 'video')['elementData']
+      ['videoUrl'];
+  return courseVideoUrl;
+  } catch(err) {
+    return null;
+  }
+
 }

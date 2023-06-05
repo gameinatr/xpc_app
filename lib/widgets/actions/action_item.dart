@@ -58,11 +58,13 @@ class _TrainingActionItemState extends State<TrainingActionItem> {
     isCorrectAnswer = action.displayType != ActionTypes.multichoice
         ? true
         : action.lastAnswers?.correct ?? true;
-    final lastAnswerDate = action.displayType != ActionTypes.multichoice
+    final lastAnswerDate = action.displayType != ActionTypes.multichoice ||
+            action.lastAnswers == null
         ? null
         : DateTime.parse(action.lastAnswers!.created);
     answerDelay = action.displayType != ActionTypes.multichoice ||
-            action.multichoiceSettings == null
+            action.multichoiceSettings == null ||
+            lastAnswerDate == null
         ? Duration.zero
         : lastAnswerDate!
             .add(Duration(
@@ -76,6 +78,12 @@ class _TrainingActionItemState extends State<TrainingActionItem> {
       startTimer();
     }
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    countdownTimer?.cancel();
+    super.dispose();
   }
 
   Future<void> actionHandler() async {
@@ -174,26 +182,44 @@ class _TrainingActionItemState extends State<TrainingActionItem> {
               htmlData: action.title,
               styles: {'div': Style(fontSize: FontSize(24))},
             ),
+            TokenizedHtml(htmlData: action.description),
             Padding(
               padding: const EdgeInsets.all(6.0),
               child: Form(
                 key: formKey,
-                child: TextFormField(
-                  style: !isCompleted
-                      ? null
-                      : const TextStyle(color: Color.fromRGBO(55, 65, 81, 0.5)),
-                  enabled: !isCompleted,
-                  controller: essayController,
-                  maxLines: 6,
-                  validator: (value) {
-                    if (value!.isEmpty ||
-                        value.split(' ').length <
-                            action.essaySettings!.essayMinWordsCount) {
-                      return 'Please type at least ${action.essaySettings!.essayMinWordsCount} words';
-                    }
-                    return null;
-                  },
-                ),
+                child: FormField(validator: (value) {
+                  if (essayController.text.isEmpty ||
+                      essayController.text.split(' ').length <
+                          action.essaySettings!.essayMinWordsCount) {
+                    return '';
+                  }
+                  return null;
+                }, builder: (FormFieldState<String> formKey) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextFormField(
+                        style: !isCompleted
+                            ? null
+                            : const TextStyle(
+                                color: Color.fromRGBO(55, 65, 81, 0.5)),
+                        enabled: !isCompleted,
+                        controller: essayController,
+                        maxLines: 6,
+                      ),
+                      Offstage(
+                          offstage: !formKey.hasError,
+                          child: TokenizedHtml(
+                              htmlData: action.essaySettings!.errorMessage,
+                              styles: {
+                                'div': Style(
+                                    textAlign: TextAlign.left,
+                                    color: Colors.red,
+                                    fontSize: FontSize(16))
+                              }))
+                    ],
+                  );
+                }),
               ),
             ),
             Row(
@@ -227,7 +253,8 @@ class _TrainingActionItemState extends State<TrainingActionItem> {
               return ActionCheckmark(
                   isCompleted: isAnswerPresent,
                   checkmarkHandler: () {
-                    if (isCompleted) return;
+                    if (isCompleted ||
+                        (!isCorrectAnswer && answerDelay.inSeconds > 0)) return;
                     if (isAnswerPresent) {
                       currentAnswers = currentAnswers
                           .where((currentAnswer) => currentAnswer != answer.id)
@@ -254,9 +281,20 @@ class _TrainingActionItemState extends State<TrainingActionItem> {
                             '${action.value} ${action.type == 'xp' ? xpLabel : xxpLabel}')),
               ],
             ),
-            if (!isCorrectAnswer && answerDelay!.inSeconds > 0)
-              Text(
-                  'Not quite! Try again in ${answerDelay.inSeconds > 60 ? '${(answerDelay.inSeconds / 60).ceil()} minutes' : '${answerDelay.inSeconds} seconds'}')
+            if (!isCorrectAnswer && answerDelay.inSeconds > 0)
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TokenizedHtml(
+                    htmlData:
+                        '${action.multichoiceSettings!.incorrectMessage} ${answerDelay.inSeconds > 60 ? '${(answerDelay.inSeconds / 60).ceil()} minutes' : '${answerDelay.inSeconds} seconds'}',
+                    styles: {
+                      'div': Style(
+                          display: Display.inline,
+                          textAlign: TextAlign.left,
+                          color: Colors.red,
+                          fontSize: FontSize(16))
+                    }),
+              )
           ].toList();
         }
         break;
@@ -275,6 +313,14 @@ class _TrainingActionItemState extends State<TrainingActionItem> {
           children: [
             CircleAvatar(
                 radius: 40, backgroundImage: NetworkImage(action.image)),
+            if (action.name != '')
+              TokenizedHtml(
+                htmlData: action.name,
+                styles: {
+                  'div': Style(
+                      fontSize: FontSize(16), color: const Color(0xff5ce0aa))
+                },
+              ),
             ...widgets,
           ],
         ),

@@ -11,6 +11,7 @@ class TrainingAction {
   int module;
   String image;
   String title;
+  String name;
   String description;
   String label;
   String type;
@@ -39,6 +40,7 @@ class TrainingAction {
     required this.module,
     required this.image,
     required this.title,
+    required this.name,
     required this.description,
     required this.label,
     required this.type,

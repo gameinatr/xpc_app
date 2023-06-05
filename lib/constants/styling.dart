@@ -10,4 +10,6 @@ class ThemeTextStyles {
       TextStyle(fontSize: 20, fontWeight: FontWeight.w600);
   static const courseCardProgress = TextStyle(
       fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xff9fa6b2));
+  static const actionNameText =
+      TextStyle(fontSize: 16, color: Color(0xff5ce0aa));
 }

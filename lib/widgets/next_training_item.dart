@@ -6,6 +6,7 @@ import 'package:xpc_app/models/trainings/next_training_model.dart';
 import 'package:xpc_app/routing/app_router.dart';
 import 'package:xpc_app/store/single_course_state.dart';
 import 'package:xpc_app/widgets/next_training_status.dart';
+import 'package:xpc_app/widgets/tokenized_html.dart';
 
 class NextTrainingItem extends StatelessWidget {
   final NextTraining nextTraining;
@@ -42,65 +43,68 @@ class NextTrainingItem extends StatelessWidget {
         child: Material(
           elevation: 2,
           borderRadius: BorderRadius.circular(8),
-          child: IntrinsicHeight(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SizedBox(
-                  width: 150,
-                  child: ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(8),
-                          topRight: Radius.circular(8)),
-                      child: AspectRatio(
-                          aspectRatio: 16 / 9,
-                          child: Image.network(
-                            nextTraining.thumbnail,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ))),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(
+                width: 150,
+                child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(8),
+                        topRight: Radius.circular(8)),
+                    child: AspectRatio(
+                        aspectRatio: 16 / 9,
+                        child: Image.network(
+                          nextTraining.thumbnail,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ))),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                const SizedBox(height: 20),
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            nextTraining.title,
+                            style: ThemeTextStyles.boldMediumSize,
+                          ),
+                          const SizedBox(height: 10),
+                          NextTrainingStatus(
+                              status: nextTraining.awaitingStatus),
+                        ],
+                      ),
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    const SizedBox(height: 10),
+                    Row(
                       children: [
-                        Text(
-                          nextTraining.title,
-                          style: ThemeTextStyles.boldMediumSize,
-                        ),
-                        const SizedBox(height: 10),
-                        NextTrainingStatus(status: nextTraining.awaitingStatus),
-                        const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            if (nextTraining.xp != null && nextTraining.xp! > 0)
-                              Text(
-                                '${nextTraining.xp.toString()} $xpLabel',
-                                style: ThemeTextStyles.semiBoldMediumSize,
-                              ),
-                            const SizedBox(width: 6),
-                            if (nextTraining.xxp != null &&
-                                nextTraining.xxp! > 0)
-                              Text(
+                        if (nextTraining.xp != null && nextTraining.xp! > 0)
+                          TokenizedHtml(
+                            htmlData: '${nextTraining.xp.toString()} $xpLabel',
+                          ),
+                        const SizedBox(width: 6),
+                        if (nextTraining.xxp != null && nextTraining.xxp! > 0)
+                          TokenizedHtml(
+                            htmlData:
                                 '${nextTraining.xxp.toString()} $xxpLabel',
-                                style: ThemeTextStyles.semiBoldMediumSize,
-                              ),
-                          ],
-                        ),
-                        const SizedBox(height: 14),
+                          ),
                       ],
                     ),
-                  ),
-                )
-              ],
-            ),
+                    const SizedBox(height: 14),
+                  ],
+                ),
+              )
+            ],
           ),
         ),
       ),

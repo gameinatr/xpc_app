@@ -49,6 +49,7 @@ class _CourseHomeScreenState extends State<CourseHomeScreen> {
             );
           }
           if (state is SingleCourseLoaded) {
+            print(state.course.videoLink);
             final StudentUserBloc userBloc =
                 BlocProvider.of<StudentUserBloc>(context);
             final SchoolSiteBloc siteBloc =
@@ -59,14 +60,13 @@ class _CourseHomeScreenState extends State<CourseHomeScreen> {
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
               child: Column(
                 children: [
-                  VideoPlayerWidget(videoUrl: state.course.videoLink),
+                  if (state.course.videoLink != '')
+                    VideoPlayerWidget(videoUrl: state.course.videoLink),
                   const SizedBox(height: 15),
                   TokenizedHtml(htmlData: state.course.description),
                   const SizedBox(height: 15),
-                  const Text(
-                    'Next Up Trainings',
-                    style: ThemeTextStyles.headline
-                  ),
+                  const Text('Next Up Trainings',
+                      style: ThemeTextStyles.headline),
                   ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,

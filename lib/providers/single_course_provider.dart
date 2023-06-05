@@ -14,6 +14,7 @@ class SingleCourseProvider {
         endpoint:
             'v2/membership/site/$siteId/course/$courseId?page=course-home');
     final courseData = courseResponse.data;
+    final courseVideoUrl = getVideoUrlFromCourseData(courseData);
     final nextUpTrainingsResponse = await Authorized().request(
         method: HttpMethod.get,
         endpoint:
@@ -31,7 +32,6 @@ class SingleCourseProvider {
         title: courseData['title'],
         xpLabel: courseData['configs']['bottom_bar']['xp_label'],
         xxpLabel: courseData['configs']['bottom_bar']['xxp_label'],
-        videoLink:
-            'https://cdn-dev.xperiencify.com/users/27392/trainings/48954/1669703616821__transcode');
+        videoLink: courseVideoUrl ?? '');
   }
 }

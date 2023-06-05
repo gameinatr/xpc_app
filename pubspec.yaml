@@ -106,7 +106,7 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
 flutter_native_splash:
   color: "#ffffff"
-  image: "assets/images/logo.png"
+  image: "assets/images/xp_logo_mid_large.png"
 
 flutter_launcher_icons:
   android: "launcher_icon"
